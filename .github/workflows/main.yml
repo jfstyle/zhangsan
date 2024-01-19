@@ -1,51 +1,25 @@
-# workflow
-name: Blog
+name: Upload to COS
 
-on:
-  push:
-    branches:
-      - master
+on: [push]
+
+permissions:
+  contents: write
 
 jobs:
-  deploy:
-    name: Deploy Blog
+  build:
+
     runs-on: ubuntu-latest
-    env:
-      TZ: Asia/Shanghai
 
     steps:
-    # check it to your workflow can access it
-    # from: https://github.com/actions/checkout
-    - name: Checkout Repository master branch
-      uses: actions/checkout@v2
-      with: 
-        ref: 'master'
-        submodules: true
-
-  # from: https://github.com/actions/setup-node
-    - name: Setup Node.js
-      uses: actions/setup-node@master
-      with: 
-        node-version: "14.x"
-
-    - name: Yarn Install Cache
-      uses: c-hive/gha-yarn-cache@v1
-
-    - name: Install Dependencies
-      run: yarn install
-
-    ## generate files
-    - name: Generate Hexo Site Public Files & Create Files for Blog Assets
-      run: yarn build
-
-    ## deploy to tencent cos
-    - name: Deploy to Tencent COS
+    - uses: actions/checkout@v1
+    - name: Install coscmd
+      run: sudo pip install coscmd
+    - name: Configure coscmd
       env:
         SECRET_ID: ${{ secrets.TENCENT_CLOUD_SECRET_ID }}
         SECRET_KEY: ${{ secrets.TENCENT_CLOUD_SECRET_KEY }}
         BUCKET: ${{ secrets.COS_BUCKET }}
         REGION: ${{ secrets.COS_REGION }}
-      run: |
-        sudo pip install coscmd
-        coscmd config -a ${SECRET_ID} -s ${SECRET_KEY} -b ${BUCKET} -r ${REGION}
-        coscmd upload -rs --delete ./public/ / -f
+      run: coscmd config -a $SECRET_ID -s $SECRET_KEY -b $BUCKET -r $REGION
+    - name: Upload
+      run: coscmd upload -rs --delete -f ./ / --ignore "./.git/*"
