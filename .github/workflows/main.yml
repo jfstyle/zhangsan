@@ -1,8 +1,11 @@
 name: Upload to COS
 
-on: [push]
+on:
+  push:
+    branches:
+      - main  # Set a branch to deploy
+  pull_request:
 
-# 解决方案
 permissions:
   contents: write
 
