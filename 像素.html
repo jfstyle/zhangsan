@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Canvas 像素操作</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        body{
+            overflow: hidden;
+        }
+        .sky{
+            background:#000;
+        }
+    </style>
+</head>
+<body>
+    <canvas class='sky'>
+
+    </canvas>
+
+
+<script>
+
+    this.sky = document.getElementsByClassName('sky')[0];
+    this.ctx = this.sky.getContext("2d");
+    this.sky.width = window.innerWidth;
+    this.sky.height = window.innerHeight;
+    this.wid = window.innerWidth;
+    this.hei = window.innerHeight;
+    textPixel();
+    randomCode();
+    function textPixel(){
+        // var w = window.innerWidth;
+        // var h = window.innerHeight;
+        // alert(w+","+h);
+        this.newImg1 = this.ctx.createImageData(this.wid,this.hei);
+        for(i=0;i<this.wid*this.hei;i++){
+            this.newImg1.data[i*4] = Math.random()*255;
+            this.newImg1.data[i*4+1] = Math.random()*255;
+            this.newImg1.data[i*4+2] = Math.random()*255;
+            this.newImg1.data[i*4+3] = 255;
+        }
+        this.ctx.putImageData(this.newImg1,0,0);
+    }
+    function randomCode(attr){
+        this.ctx.textBaseline = 'top';
+        this.ctx.fillStyle = "rgba(100,250,0,1)";
+        this.h = 100;
+        this.ctx.font = h+"px sans-serif";
+        this.w = ctx.measureText(attr).width;
+        this.ctx.fillText(attr,(this.wid-this.w)/2,(this.hei-this.h)/2);
+        var oImg = ctx.getImageData((this.wid-this.w)/2,(this.hei-this.h)/2,this.w,this.h);
+        this.ctx.clearRect(0,0,this.wid,this.hei);
+        var arr = randomArr(this.w*this.h,(this.w*this.h)/5);
+        this.newImg = this.ctx.createImageData(this.w,this.h);
+        // for(i=0;i<oImg.data.length;i++){
+        //     if(oImg.data[i]!=0 && oImg.data[i]!=255){
+        //         oImg.data[i] = Math.random()*255;
+        //     }
+        // }
+        for(i=0;i<arr.length;i++){
+            this.newImg.data[4*arr[i]] = oImg.data[4*arr[i]];
+            this.newImg.data[4*arr[i]+1] = oImg.data[4*arr[i]+1];
+            this.newImg.data[4*arr[i]+2] = oImg.data[4*arr[i]+2];
+            this.newImg.data[4*arr[i]+3] = oImg.data[4*arr[i]+3];
+        }
+        this.ctx.putImageData(this.newImg,(this.wid-this.w)/2,(this.hei-this.h)/2);
+    }
+    function randomArr(iAll,iNow){
+        var arr = [];
+        var newArr = [];
+        for(var i=0;i<iAll;i++){
+            arr.push(i);
+        }
+        for(var i=0;i<iNow;i++){
+            newArr.push( arr.splice( Math.floor( Math.random()*arr.length ) , 1 ) );
+        }
+        return newArr;
+    }
+</script>
+</body>
+</html>

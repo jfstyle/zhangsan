@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>画板</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        #canvas{
+            position: absolute;
+            background: #eee;
+        }
+    </style>
+    <script>
+        window.onload = function(){
+            var canvas = document.getElementById('canvas');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            var oGc = canvas.getContext('2d');
+            document.onmousedown = function(ev){
+                var ev = ev || window.event;
+                this.x = ev.clientX;
+                this.y = ev.clientY;
+             document.onmousemove = function(ev){
+                    var ev = ev || window.event;
+                    oGc.save();
+                    oGc.moveTo(this.x,this.Y);
+                    oGc.lineTo(ev.clientX,ev.clientY);
+                    oGc.strokeStyle = "#"+parseInt(Math.random()*9)+""+parseInt(Math.random()*9)+""+parseInt(Math.random()*9);
+                    console.log(ev.clientX+","+ev.clientY);
+                    oGc.stroke();
+                    oGc.restore();  
+                    this.x = ev.clientX;
+                    this.y = ev.clientY;
+                }
+                document.onmouseup = function(){
+                    oGc.closePath();
+                    oGc.fillStyle="#fac";
+                    oGc.fill();
+                    document.onmousemove = null;
+                    document.onmouseup = null;
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="600"> ie8以下暂不支持画布，请更新您的浏览器</canvas>
+</body>
+</html>

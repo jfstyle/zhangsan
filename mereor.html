@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+<style>
+    *{
+        padding: 0;
+        margin: 0;
+    }
+    body{
+        overflow: hidden;
+    }
+    .sky{
+        position: absolute;
+        /* background: #000; */
+        display: block;
+    }
+
+</style>
+</head>
+
+
+<body>
+    <canvas class="sky"></canvas>
+</body>
+
+<script>
+
+    var Canvas = {};
+    Canvas.anim = {
+        window:function(){
+            this.sky.width = window.innerWidth;
+            this.sky.height = window.innerHeight;
+            this.wid = window.innerWidth;
+            this.hei = window.innerHeight;
+        },
+        init: function(){
+            this.sky = document.getElementsByClassName('sky')[0];
+            this.ctx = this.sky.getContext("2d");
+            this.fontSize = 12;
+            this.particles = [];
+            this.window();
+        },
+        attr: function(){
+            var particle = {
+                x: Math.random() * this.wid,
+                y: Math.random() * this.hei,
+                speedX: (Math.random()*5)+5,
+                fontSize: (Math.random() * 36 ) + 18,
+                color: "rgba("+Math.random()*255+","+Math.random()*255+","+Math.random()*255+","+Math.random()*1+")",
+            }
+            this.particles.push(particle);
+            this.stars();
+        },
+        stars: function(){
+            this.fadeCanvas();
+            var particleCount = this.particles.length;
+            for(i=0;i<particleCount;i++){
+            var particle = this.particles[i];
+                if(particle.x<this.wid || particle.y<this.hei){
+                    this.ctx.font = particle.fontSize+"px sans-serif";
+                    this.ctx.fillStyle = particle.color;
+                    this.ctx.fillText(".",particle.x,particle.y);
+                    particle.x += particle.speedX;
+                    particle.y += particle.speedX*0.6;
+                    //(x*0.3)/((x*0.3)+x)*45 = 度数
+                    
+                }
+            }
+        },
+        fadeCanvas:function(){
+            this.ctx.fillStyle = "rgba(0,0,0,.1)";
+            this.ctx.fillRect(0,0,this.wid,this.hei);
+        },
+    }
+
+    Canvas.anim.init();
+    window.onresize = function(){
+        Canvas.anim.window();
+    }
+    setInterval(function(){
+        Canvas.anim.attr();
+    },30);
+    
+</script>
+
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>喷泉效果</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        #canvas{
+            display: block;
+            background:#000;
+        }
+    
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+</body>
+
+<script>
+    var Canvas = {}             //命名空间
+    //动画特效
+    Canvas.anim = {
+        init:function(){
+            var canvasDiv = document.getElementById("canvas");
+            canvasDiv.width = window.innerWidth;
+            canvasDiv.height = window.innerHeight;
+            this.ctx = canvas.getContext("2d");
+            this.textW = window.innerWidth;
+            this.textH = window.innerHeight;
+            this.particles = [];
+            this.random;
+            this.speed = 15;
+            // this.color = ["#fac","#caf","#fca"];
+            this.color = ["255,170,204","204,170,255","170,255,204"];
+        },
+        position:function(){
+            //显示位置
+            //最后更新时间： 2018/5/22 18:00
+            var particle = {
+                //起始位置
+                x: this.textW / 2,
+                y: this.textH,
+                //97ascll码中小写的字母a
+                charcter: String.fromCharCode(97+this.random),
+                fontSize: Math.floor( Math.random() * 5 ) + 18,
+                colorNum: Math.floor(Math.random()*this.color.length),
+                opac: 1,
+                xSpeed: ( Math.random()*this.speed ) - this.speed/2,
+                ySpeed: ( Math.random()*this.speed/2)
+            }
+            this.particles.push(particle);
+            // console.log(this.particles);
+            //随机26个字母
+            this.random = Math.floor(Math.random()*26);
+            this.effect();              //执行特效
+        },
+        effect:function(){
+            this.fadeCanvas();      //清除画布
+            var particleCount = this.particles.length;
+            for(i=0;i<particleCount;i++){
+                var particle = this.particles[i];
+                particle.opac -=0.01;
+                if(particle.opac > 0){          //可见化执行
+                    this.ctx.font = particle.fontSize+"px sans-serif";
+                    this.ctx.fillStyle = "rgba("+this.color[particle.colorNum]+","+particle.opac+")";
+                    this.ctx.fillText(particle.charcter,particle.x,particle.y);
+                    particle.x -= particle.xSpeed;
+                    particle.y -= particle.ySpeed;
+                    particle.y *= 0.985;
+                }
+            }
+        },
+        fadeCanvas:function(){
+            this.ctx.fillStyle = "rgba(0,0,0,.3)";
+            this.ctx.fillRect(0,0,this.textW,this.textH);
+        },
+        clearCanvas:function(){
+            this.ctx.fillRect(0,0,this.textW,this.textH);
+        },
+        start:function(){
+            this.position();        //运算位置
+        }
+    }
+// alert(String.fromCharCode(97));
+// alert(String.fromCharCode(122));
+    Canvas.anim.init();            //初始化
+    setInterval(function(){
+        Canvas.anim.start();
+    },30);
+
+    window.onresize = function(){
+        Canvas.anim.init();
+    }
+
+
+</script>
+
+
+</html>
