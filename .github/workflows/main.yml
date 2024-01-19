@@ -2,6 +2,10 @@ name: Upload to COS
 
 on: [push]
 
+# 解决方案
+permissions:
+  contents: write
+
 jobs:
   build:
 
